@@ -5,3 +5,4 @@ My little todo list
 [x] validate card number
 [x] validate cvc
 [] introduce tailwind with color scheme
+[] check if visa or maestro, fake it
