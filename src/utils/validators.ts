@@ -49,11 +49,12 @@ export const validateExpiryDate = (expiryDate: string) => {
   }
   const arr = expiryDate.split("/");
 
-  if (Number(arr[0]) > 30 || Number(arr[0]) <= 0) {
+  if (Number(arr[0]) > 12 || Number(arr[0]) <= 0) {
     return false;
   }
 
-  if (Number(arr[1]) > 12 || Number(arr[1]) <= 0) {
+  // let's assume there are no cards with 2030 as an expiration date
+  if (Number(arr[1]) > 30 || Number(arr[1]) <= 0) {
     return false;
   }
 
