@@ -4,5 +4,9 @@ My little todo list
 [x] validate date
 [x] validate card number
 [x] validate cvc
-[] introduce tailwind with color scheme
+[x] introduce tailwind with color scheme
 [] check if visa or maestro, fake it
+[] any in typescript
+[] gradient on cards
+[] split card number after 4
+[] disable button if form is invalid

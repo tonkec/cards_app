@@ -1,7 +1,7 @@
 import { useState, MouseEvent } from "react";
 import { useSelector } from "react-redux";
 import { initialState } from "../reducers/cardSlice";
-
+import Card from "./Card";
 import Modal from "./Modal";
 
 const Cards = () => {
@@ -12,6 +12,7 @@ const Cards = () => {
   const [isModalShown, setIsModalShown] = useState(false);
   const onButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     const buttonValue = e.target as HTMLButtonElement;
+    console.log(e);
     const filteredCard = cards.filter(
       (card: any) => card.id === Number(buttonValue.value)
     );
@@ -27,17 +28,20 @@ const Cards = () => {
   };
   return (
     <>
-      <h1>Your Cards</h1>
+      <h1 className="text-xl text-purple font-bold mt-6">Your Cards</h1>
+      <p className="text-gray text-sm mb-6">
+        Add, edit or delete your cards any time.
+      </p>
       {cards.length > 0 &&
         cards.map((card: any) => (
-          <div key={card.id}>
-            {card.name} | {card.cardNumber} | {card.expiryDate} | {card.cvc}
-            <button value={card.id} onClick={onButtonClick}>
-              Edit Card
-            </button>
-          </div>
+          <Card card={card} onButtonClick={onButtonClick} />
         ))}
-      <button onClick={modalOpen}>Add New Card</button>
+      <button
+        onClick={modalOpen}
+        className="bg-purple text-white rounded-xl w-full block py-3 mt-6 font-bold text-md"
+      >
+        Add new card
+      </button>
       {action === "edit" ? (
         <Modal
           key={isModalShown ? "open" : "closed"}

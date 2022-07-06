@@ -18,6 +18,8 @@ interface ModalProps {
   close: () => void;
 }
 
+const input = "block w-full border-b border-gray";
+
 const Modal = (props: ModalProps) => {
   const { name, cardNumber, expiryDate, cvc, isShown, close, id } = props;
   const [newName, setNewName] = useState(name ? name : "");
@@ -127,51 +129,64 @@ const Modal = (props: ModalProps) => {
   };
 
   return (
-    <div>
-      <button onClick={close}>close</button>
-      {id && (
-        <h1 className="text-3xl font-bold underline" onClick={handleRemoveCard}>
-          Delete me
-        </h1>
-      )}
-      <form onSubmit={onFormSubmit}>
-        <input
-          type="text"
-          defaultValue={name ? name : ""}
-          onChange={onNameChange}
-          placeholder="Name"
-        />
-        <br />
-        {error.name !== "" && <span>Name is not valid</span>}
-        <input
-          type="text"
-          defaultValue={cardNumber ? cardNumber : ""}
-          placeholder="Card Number"
-          onChange={onCardNumberChange}
-        />
-        <br />
-        {error.number !== "" && <span>Card number is not valid</span>}
-        <input
-          type="text"
-          defaultValue={expiryDate ? expiryDate : ""}
-          placeholder="Expiry date"
-          onChange={onDateChange}
-        />
-        <br />
+    <>
+      <div className="fixed bg-black opacity-40 -z-10 inset-0"></div>
+      <div className="fixed max-w-sm inset-0 mx-auto top-1/2 -translate-y-1/2 bg-white px-4 py-8 rounded-md">
+        <h2 className="text-black font-black">
+          {id ? "Edit your card" : "Add your card details"}
+        </h2>
+        <button onClick={close}>close</button>
+        {id && (
+          <h1
+            className="text-3xl font-bold underline"
+            onClick={handleRemoveCard}
+          >
+            Delete me
+          </h1>
+        )}
+        <form onSubmit={onFormSubmit} className="w-full">
+          <input
+            className={input}
+            type="text"
+            defaultValue={name ? name : ""}
+            onChange={onNameChange}
+            placeholder="Name"
+          />
+          <br />
+          {error.name !== "" && <span>Name is not valid</span>}
+          <input
+            className={input}
+            type="text"
+            defaultValue={cardNumber ? cardNumber : ""}
+            placeholder="Card Number"
+            onChange={onCardNumberChange}
+          />
+          <br />
+          {error.number !== "" && <span>Card number is not valid</span>}
+          <input
+            className={input}
+            type="text"
+            defaultValue={expiryDate ? expiryDate : ""}
+            placeholder="Expiry date"
+            onChange={onDateChange}
+          />
+          <br />
 
-        {error.date !== "" && <span>Date is not valid</span>}
-        <input
-          type="text"
-          defaultValue={cvc ? cvc : ""}
-          onChange={onCvcChange}
-          placeholder="cvc"
-        />
-        <br />
-        {error.cvc !== "" && <span>cvc is not valid</span>}
-        {error.form !== "" && <span>Form is not valid</span>}
-        <input type="submit" value="send" />
-      </form>
-    </div>
+          {error.date !== "" && <span>Date is not valid</span>}
+          <input
+            className={input}
+            type="text"
+            defaultValue={cvc ? cvc : ""}
+            onChange={onCvcChange}
+            placeholder="cvc"
+          />
+          <br />
+          {error.cvc !== "" && <span>cvc is not valid</span>}
+          {error.form !== "" && <span>Form is not valid</span>}
+          <input type="submit" value="send" />
+        </form>
+      </div>
+    </>
   );
 };
 
