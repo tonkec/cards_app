@@ -33,6 +33,7 @@ export const validateCvc = (cvc?: string) => {
     if (cvc.length > 3) {
       return false;
     }
+
     if (isNaN(Number(cvc))) {
       return false;
     }
@@ -47,6 +48,11 @@ export const validateExpiryDate = (expiryDate: string) => {
   if (isEmpty(expiryDate)) {
     return false;
   }
+
+  if (expiryDate.length < 3) {
+    return false;
+  }
+
   const arr = expiryDate.split("/");
 
   if (Number(arr[0]) > 12 || Number(arr[0]) <= 0) {

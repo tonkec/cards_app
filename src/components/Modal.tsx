@@ -20,10 +20,12 @@ interface ModalProps {
 
 const Modal = (props: ModalProps) => {
   const { name, cardNumber, expiryDate, cvc, isShown, close, id } = props;
-  const [newName, setNewName] = useState("");
-  const [newCardNumber, setNewCardNumber] = useState("");
-  const [newDate, setNewDate] = useState("");
-  const [newCvc, setNewCvc] = useState("");
+  const [newName, setNewName] = useState(name ? name : "");
+  const [newCardNumber, setNewCardNumber] = useState(
+    cardNumber ? cardNumber : ""
+  );
+  const [newDate, setNewDate] = useState(expiryDate ? expiryDate : "");
+  const [newCvc, setNewCvc] = useState(cvc ? cvc : "");
   const [error, setError] = useState({
     date: "",
     cvc: "",
@@ -102,8 +104,10 @@ const Modal = (props: ModalProps) => {
 
   const onFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (isFormValid()) {
+    const numberOfErrors = Object.values(error).filter(
+      (error) => error === "invalid"
+    );
+    if (isFormValid() && numberOfErrors.length === 0) {
       const payload = {
         id: id,
         name: newName === "" ? name : newName,
