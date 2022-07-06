@@ -1,6 +1,6 @@
 import { useState, MouseEvent } from "react";
 import { useSelector } from "react-redux";
-import { initialState } from "./../cardSlice";
+import { initialState } from "../reducers/cardSlice";
 
 import Modal from "./Modal";
 
@@ -40,6 +40,7 @@ const Cards = () => {
       <button onClick={modalOpen}>Add New Card</button>
       {action === "edit" ? (
         <Modal
+          key={isModalShown ? "open" : "closed"}
           id={currentCard.id}
           name={currentCard.name}
           cardNumber={currentCard.cardNumber}
@@ -49,7 +50,11 @@ const Cards = () => {
           close={modalClose}
         ></Modal>
       ) : (
-        <Modal isShown={isModalShown} close={modalClose}></Modal>
+        <Modal
+          key={isModalShown ? "open" : "closed"}
+          isShown={isModalShown}
+          close={modalClose}
+        ></Modal>
       )}
     </>
   );

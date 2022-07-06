@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import CardModel from "./models/Card";
+import CardModel from "../models/Card";
 
 export interface CardState {
   cards: CardModel[];

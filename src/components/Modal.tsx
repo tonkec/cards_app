@@ -1,12 +1,13 @@
 import { useState, FormEvent } from "react";
 import { useDispatch } from "react-redux";
+import { isEmpty } from "../utils/validators";
 import {
   validateCreditCardNumber,
   validateCvc,
   validateExpiryDate,
   validateName,
 } from "../utils/validators";
-import { removeCard, addCard, editCard } from "./../cardSlice";
+import { removeCard, addCard, editCard } from "../reducers/cardSlice";
 interface ModalProps {
   id?: number;
   name?: string;
@@ -28,6 +29,7 @@ const Modal = (props: ModalProps) => {
     cvc: "",
     name: "",
     number: "",
+    form: "",
   });
   const dispatch = useDispatch();
 
@@ -37,22 +39,45 @@ const Modal = (props: ModalProps) => {
 
   const onNameChange = (e: FormEvent<HTMLInputElement>) => {
     const inputValue = (e.target as HTMLInputElement).value;
-    setNewName(inputValue);
+    if (!validateName(inputValue)) {
+      setError((oldError) => ({ ...oldError, name: "invalid" }));
+    } else {
+      setError((oldError) => ({ ...oldError, name: "" }));
+      setNewName(inputValue);
+    }
   };
 
   const onCardNumberChange = (e: FormEvent<HTMLInputElement>) => {
     const inputValue = (e.target as HTMLInputElement).value;
-    setNewCardNumber(inputValue);
+
+    if (!validateCreditCardNumber(inputValue)) {
+      setError((oldError) => ({ ...oldError, number: "invalid" }));
+    } else {
+      setError((oldError) => ({ ...oldError, number: "" }));
+      setNewCardNumber(inputValue);
+    }
   };
 
   const onDateChange = (e: FormEvent<HTMLInputElement>) => {
     const inputValue = (e.target as HTMLInputElement).value;
-    setNewDate(inputValue);
+    if (!validateExpiryDate(inputValue)) {
+      setError((oldError) => ({ ...oldError, date: "invalid" }));
+    } else {
+      setError((oldError) => ({ ...oldError, date: "" }));
+      setNewDate(inputValue);
+    }
   };
 
   const onCvcChange = (e: FormEvent<HTMLInputElement>) => {
     const inputValue = (e.target as HTMLInputElement).value;
-    setNewCvc(inputValue);
+
+    if (!validateCvc(inputValue)) {
+      setError((oldError) => ({ ...oldError, cvc: "invalid" }));
+      return;
+    } else {
+      setError((oldError) => ({ ...oldError, cvc: "" }));
+      setNewCvc(inputValue);
+    }
   };
 
   const handleRemoveCard = () => {
@@ -60,51 +85,39 @@ const Modal = (props: ModalProps) => {
     close();
   };
 
+  const isFormValid = () => {
+    if (
+      isEmpty(newName) ||
+      isEmpty(newCardNumber) ||
+      isEmpty(newDate) ||
+      String(cvc) === "undefined"
+    ) {
+      setError((oldError) => ({ ...oldError, form: "invalid" }));
+      return false;
+    } else {
+      setError((oldError) => ({ ...oldError, form: "" }));
+      return true;
+    }
+  };
+
   const onFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const input = e.target as any;
-    if (!validateName(input.name.value)) {
-      setError((oldError) => ({ ...oldError, name: "invalid" }));
-      return;
-    } else {
-      setError((oldError) => ({ ...oldError, name: "" }));
-    }
+    if (isFormValid()) {
+      const payload = {
+        id: id,
+        name: newName === "" ? name : newName,
+        cardNumber: newCardNumber === "" ? cardNumber : newCardNumber,
+        expiryDate: newDate === "" ? expiryDate : newDate,
+        cvc: newCvc === "" ? cvc : newCvc,
+      };
 
-    if (!validateCreditCardNumber(input.cardNumber.value)) {
-      setError((oldError) => ({ ...oldError, number: "invalid" }));
-      return;
-    } else {
-      setError((oldError) => ({ ...oldError, number: "" }));
-    }
+      if (id) {
+        dispatch(editCard(payload));
+      } else {
+        dispatch(addCard(payload));
+      }
 
-    if (!validateExpiryDate(input.expiryDate.value)) {
-      setError((oldError) => ({ ...oldError, date: "invalid" }));
-      return;
-    } else {
-      setError((oldError) => ({ ...oldError, date: "" }));
-    }
-
-    if (!validateCvc(input.cvc.value)) {
-      setError((oldError) => ({ ...oldError, cvc: "invalid" }));
-      return;
-    } else {
-      setError((oldError) => ({ ...oldError, cvc: "" }));
-    }
-
-    const payload = {
-      id: id,
-      name: newName === "" ? name : newName,
-      cardNumber: newCardNumber === "" ? cardNumber : newCardNumber,
-      expiryDate: newDate === "" ? expiryDate : newDate,
-      cvc: newCvc === "" ? cvc : newCvc,
-    };
-
-    if (id) {
-      dispatch(editCard(payload));
-      close();
-    } else {
-      dispatch(addCard(payload));
       close();
     }
   };
@@ -119,7 +132,6 @@ const Modal = (props: ModalProps) => {
           defaultValue={name ? name : ""}
           onChange={onNameChange}
           placeholder="Name"
-          name="name"
         />
         <br />
         {error.name !== "" && <span>Name is not valid</span>}
@@ -128,7 +140,6 @@ const Modal = (props: ModalProps) => {
           defaultValue={cardNumber ? cardNumber : ""}
           placeholder="Card Number"
           onChange={onCardNumberChange}
-          name="cardNumber"
         />
         <br />
         {error.number !== "" && <span>Card number is not valid</span>}
@@ -137,19 +148,19 @@ const Modal = (props: ModalProps) => {
           defaultValue={expiryDate ? expiryDate : ""}
           placeholder="Expiry date"
           onChange={onDateChange}
-          name="expiryDate"
-        />{" "}
+        />
         <br />
+
         {error.date !== "" && <span>Date is not valid</span>}
         <input
           type="text"
           defaultValue={cvc ? cvc : ""}
           onChange={onCvcChange}
           placeholder="cvc"
-          name="cvc"
         />
         <br />
         {error.cvc !== "" && <span>cvc is not valid</span>}
+        {error.form !== "" && <span>Form is not valid</span>}
         <input type="submit" value="send" />
       </form>
     </div>

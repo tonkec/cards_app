@@ -1,4 +1,4 @@
-const isEmpty = (someString: string) => {
+export const isEmpty = (someString: string) => {
   if (someString.trim() === "") {
     return true;
   }
