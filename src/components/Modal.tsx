@@ -90,7 +90,7 @@ const Modal = (props: ModalProps) => {
       isEmpty(newName) ||
       isEmpty(newCardNumber) ||
       isEmpty(newDate) ||
-      String(cvc) === "undefined"
+      String(newCvc) === "undefined"
     ) {
       setError((oldError) => ({ ...oldError, form: "invalid" }));
       return false;
@@ -125,7 +125,11 @@ const Modal = (props: ModalProps) => {
   return (
     <div>
       <button onClick={close}>close</button>
-      {id && <h1 onClick={handleRemoveCard}>Delete me</h1>}
+      {id && (
+        <h1 className="text-3xl font-bold underline" onClick={handleRemoveCard}>
+          Delete me
+        </h1>
+      )}
       <form onSubmit={onFormSubmit}>
         <input
           type="text"
