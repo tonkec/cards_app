@@ -22,8 +22,6 @@ export const CardSlice = createSlice({
   initialState,
   reducers: {
     addCard: (state, action) => {
-      console.log(action);
-      console.log("here reducer");
       const card = {
         id: Math.random() * 100,
         name: action.payload.name,
