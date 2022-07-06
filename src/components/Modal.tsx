@@ -23,6 +23,12 @@ const Modal = (props: ModalProps) => {
   const [newCardNumber, setNewCardNumber] = useState("");
   const [newDate, setNewDate] = useState("");
   const [newCvc, setNewCvc] = useState("");
+  const [error, setError] = useState({
+    date: "",
+    cvc: "",
+    name: "",
+    number: "",
+  });
   const dispatch = useDispatch();
 
   if (!isShown) {
@@ -58,23 +64,32 @@ const Modal = (props: ModalProps) => {
     e.preventDefault();
 
     const input = e.target as any;
-    if (!validateExpiryDate(input.expiryDate.value)) {
-      console.log("date is not valid");
-      return;
-    }
     if (!validateName(input.name.value)) {
-      console.log("name can't be empty");
+      setError((oldError) => ({ ...oldError, name: "invalid" }));
       return;
+    } else {
+      setError((oldError) => ({ ...oldError, name: "" }));
     }
 
     if (!validateCreditCardNumber(input.cardNumber.value)) {
-      console.log("cn is invalid");
+      setError((oldError) => ({ ...oldError, number: "invalid" }));
       return;
+    } else {
+      setError((oldError) => ({ ...oldError, number: "" }));
+    }
+
+    if (!validateExpiryDate(input.expiryDate.value)) {
+      setError((oldError) => ({ ...oldError, date: "invalid" }));
+      return;
+    } else {
+      setError((oldError) => ({ ...oldError, date: "" }));
     }
 
     if (!validateCvc(input.cvc.value)) {
-      console.log("cvc is invalid");
+      setError((oldError) => ({ ...oldError, cvc: "invalid" }));
       return;
+    } else {
+      setError((oldError) => ({ ...oldError, cvc: "" }));
     }
 
     const payload = {
@@ -84,10 +99,13 @@ const Modal = (props: ModalProps) => {
       expiryDate: newDate === "" ? expiryDate : newDate,
       cvc: newCvc === "" ? cvc : newCvc,
     };
+
     if (id) {
       dispatch(editCard(payload));
+      close();
     } else {
       dispatch(addCard(payload));
+      close();
     }
   };
 
@@ -103,6 +121,8 @@ const Modal = (props: ModalProps) => {
           placeholder="Name"
           name="name"
         />
+        <br />
+        {error.name !== "" && <span>Name is not valid</span>}
         <input
           type="text"
           defaultValue={cardNumber ? cardNumber : ""}
@@ -110,13 +130,17 @@ const Modal = (props: ModalProps) => {
           onChange={onCardNumberChange}
           name="cardNumber"
         />
+        <br />
+        {error.number !== "" && <span>Card number is not valid</span>}
         <input
           type="text"
           defaultValue={expiryDate ? expiryDate : ""}
           placeholder="Expiry date"
           onChange={onDateChange}
           name="expiryDate"
-        />
+        />{" "}
+        <br />
+        {error.date !== "" && <span>Date is not valid</span>}
         <input
           type="text"
           defaultValue={cvc ? cvc : ""}
@@ -124,6 +148,8 @@ const Modal = (props: ModalProps) => {
           placeholder="cvc"
           name="cvc"
         />
+        <br />
+        {error.cvc !== "" && <span>cvc is not valid</span>}
         <input type="submit" value="send" />
       </form>
     </div>
