@@ -7,7 +7,17 @@ import {
   validateExpiryDate,
   validateName,
 } from "../utils/validators";
+import {
+  input,
+  label,
+  modal,
+  button,
+  errorMessage,
+  errorInput,
+} from "../styles/Components";
 import { removeCard, addCard, editCard } from "../reducers/cardSlice";
+import { CgClose } from "react-icons/cg";
+import { formatCardNumber } from "../utils/cardNumberFormatter";
 interface ModalProps {
   id?: number;
   name?: string;
@@ -17,8 +27,6 @@ interface ModalProps {
   isShown: boolean;
   close: () => void;
 }
-
-const input = "block w-full border-b border-gray";
 
 const Modal = (props: ModalProps) => {
   const { name, cardNumber, expiryDate, cvc, isShown, close, id } = props;
@@ -33,7 +41,6 @@ const Modal = (props: ModalProps) => {
     cvc: "",
     name: "",
     number: "",
-    form: "",
   });
   const dispatch = useDispatch();
 
@@ -58,7 +65,7 @@ const Modal = (props: ModalProps) => {
       setError((oldError) => ({ ...oldError, number: "invalid" }));
     } else {
       setError((oldError) => ({ ...oldError, number: "" }));
-      setNewCardNumber(inputValue);
+      setNewCardNumber(formatCardNumber(inputValue));
     }
   };
 
@@ -74,7 +81,7 @@ const Modal = (props: ModalProps) => {
 
   const onCvcChange = (e: FormEvent<HTMLInputElement>) => {
     const inputValue = (e.target as HTMLInputElement).value;
-
+    console.log(validateCvc(inputValue));
     if (!validateCvc(inputValue)) {
       setError((oldError) => ({ ...oldError, cvc: "invalid" }));
       return;
@@ -90,26 +97,26 @@ const Modal = (props: ModalProps) => {
   };
 
   const isFormValid = () => {
-    if (
-      isEmpty(newName) ||
-      isEmpty(newCardNumber) ||
-      isEmpty(newDate) ||
-      String(newCvc) === "undefined"
-    ) {
-      setError((oldError) => ({ ...oldError, form: "invalid" }));
+    const nextError = { ...error };
+    nextError.name = isEmpty(newName) ? "invalid" : "";
+    nextError.number = isEmpty(newCardNumber) ? "invalid" : "";
+    nextError.cvc = isEmpty(String(newCvc)) ? "invalid" : "";
+    nextError.date = isEmpty(newDate) ? "invalid" : "";
+
+    const numberOfErrors = Object.values(nextError).filter(
+      (error) => error === "invalid"
+    );
+    setError(nextError);
+
+    if (numberOfErrors.length > 0) {
       return false;
-    } else {
-      setError((oldError) => ({ ...oldError, form: "" }));
-      return true;
     }
+    return true;
   };
 
   const onFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const numberOfErrors = Object.values(error).filter(
-      (error) => error === "invalid"
-    );
-    if (isFormValid() && numberOfErrors.length === 0) {
+    if (isFormValid()) {
       const payload = {
         id: id,
         name: newName === "" ? name : newName,
@@ -131,60 +138,89 @@ const Modal = (props: ModalProps) => {
   return (
     <>
       <div className="fixed bg-black opacity-40 -z-10 inset-0"></div>
-      <div className="fixed max-w-sm inset-0 mx-auto top-1/2 -translate-y-1/2 bg-white px-4 py-8 rounded-md">
-        <h2 className="text-black font-black">
-          {id ? "Edit your card" : "Add your card details"}
-        </h2>
-        <button onClick={close}>close</button>
-        {id && (
-          <h1
-            className="text-3xl font-bold underline"
-            onClick={handleRemoveCard}
-          >
-            Delete me
-          </h1>
-        )}
-        <form onSubmit={onFormSubmit} className="w-full">
-          <input
-            className={input}
-            type="text"
-            defaultValue={name ? name : ""}
-            onChange={onNameChange}
-            placeholder="Name"
-          />
-          <br />
-          {error.name !== "" && <span>Name is not valid</span>}
-          <input
-            className={input}
-            type="text"
-            defaultValue={cardNumber ? cardNumber : ""}
-            placeholder="Card Number"
-            onChange={onCardNumberChange}
-          />
-          <br />
-          {error.number !== "" && <span>Card number is not valid</span>}
-          <input
-            className={input}
-            type="text"
-            defaultValue={expiryDate ? expiryDate : ""}
-            placeholder="Expiry date"
-            onChange={onDateChange}
-          />
-          <br />
+      <div className={modal}>
+        <section
+          className={`bg-white-100 px-4 py-8 rounded-md relative top-1/2 -translate-y-1/2`}
+        >
+          <h2 className="text-black font-black mb-6 text-lg">
+            {id ? "Edit your card" : "Add your card details"}
+          </h2>
+          <button onClick={close} className="absolute top-4 right-4 font-bold">
+            <CgClose />
+          </button>
+          {id && (
+            <h1
+              className="text-3xl font-bold underline"
+              onClick={handleRemoveCard}
+            >
+              Delete me
+            </h1>
+          )}
+          <form onSubmit={onFormSubmit} className="w-full">
+            <label htmlFor="name" className={label}>
+              Name in card
+            </label>
+            <input
+              className={error.name !== "" ? errorInput : input}
+              type="text"
+              defaultValue={name ? name : ""}
+              onChange={onNameChange}
+              placeholder="John Doe"
+              id="name"
+            />
 
-          {error.date !== "" && <span>Date is not valid</span>}
-          <input
-            className={input}
-            type="text"
-            defaultValue={cvc ? cvc : ""}
-            onChange={onCvcChange}
-            placeholder="cvc"
-          />
-          <br />
-          {error.cvc !== "" && <span>cvc is not valid</span>}
-          {error.form !== "" && <span>Form is not valid</span>}
-          <input type="submit" value="send" />
-        </form>
+            {error.name !== "" && (
+              <span className={errorMessage}>Name is not valid</span>
+            )}
+            <label htmlFor="cn" className={label}>
+              Card number
+            </label>
+            <input
+              className={error.number !== "" ? errorInput : input}
+              type="text"
+              defaultValue={cardNumber ? cardNumber : ""}
+              placeholder="0000 0000 0000 0000"
+              onChange={onCardNumberChange}
+              id="cn"
+            />
+
+            {error.number !== "" && (
+              <span className={errorMessage}>Card number is not valid</span>
+            )}
+            <label htmlFor="date" className={label}>
+              Expiry date
+            </label>
+            <input
+              className={error.date !== "" ? errorInput : input}
+              type="text"
+              defaultValue={expiryDate ? expiryDate : ""}
+              placeholder="00/00"
+              onChange={onDateChange}
+              id="date"
+            />
+
+            {error.date !== "" && (
+              <span className={errorMessage}>Date is not valid</span>
+            )}
+            <label htmlFor="cvc" className={label}>
+              CVC (security code)
+            </label>
+            <input
+              className={error.cvc !== "" ? errorInput : input}
+              type="text"
+              defaultValue={cvc ? cvc : ""}
+              onChange={onCvcChange}
+              placeholder="000"
+              id="cvc"
+            />
+
+            {error.cvc !== "" && (
+              <span className={errorMessage}>cvc is not valid</span>
+            )}
+
+            <input type="submit" value="Confirm" className={`${button} mt-8`} />
+          </form>
+        </section>
       </div>
     </>
   );

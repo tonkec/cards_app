@@ -30,7 +30,7 @@ export const validateCvc = (cvc?: string) => {
       return false;
     }
 
-    if (cvc.length > 3) {
+    if (cvc.length !== 3) {
       return false;
     }
 

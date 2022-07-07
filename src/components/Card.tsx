@@ -2,7 +2,7 @@ import { SiMastercard } from "react-icons/si";
 const Card = (props: any) => {
   return (
     <div
-      className="bg-purple2 text-white rounded-sm p-3 relative"
+      className="bg-purple-100 text-white-100 rounded-sm p-3 relative mb-6"
       key={props.card.id}
     >
       <header className="relative right-3 flex pb-8">
@@ -12,13 +12,13 @@ const Card = (props: any) => {
         <div className="absolute right-0 flex">
           <div className="mr-4">
             <h6 className="text-xs">CVC</h6>
-            <span className="font-bold text-white text-sm">
-              {props.card.expiryDate}
+            <span className="font-bold text-white-100 text-sm">
+              {props.card.cvc}
             </span>
           </div>
           <div>
             <h6 className="text-xs">Expires</h6>
-            <span className="font-bold text-white text-sm">
+            <span className="font-bold text-white-100 text-sm">
               {props.card.expiryDate}
             </span>
           </div>
