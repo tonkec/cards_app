@@ -28,6 +28,15 @@ interface ModalProps {
   close: () => void;
 }
 
+function getNumberOfErrors(errors: {
+  name: string;
+  number: string;
+  cvc: string;
+  date: string;
+}) {
+  return Object.values(errors).filter((error) => error === "invalid").length;
+}
+
 const Modal = (props: ModalProps) => {
   const { name, cardNumber, expiryDate, cvc, isShown, close, id } = props;
   const [newName, setNewName] = useState(name ? name : "");
@@ -81,7 +90,6 @@ const Modal = (props: ModalProps) => {
 
   const onCvcChange = (e: FormEvent<HTMLInputElement>) => {
     const inputValue = (e.target as HTMLInputElement).value;
-    console.log(validateCvc(inputValue));
     if (!validateCvc(inputValue)) {
       setError((oldError) => ({ ...oldError, cvc: "invalid" }));
       return;
@@ -103,12 +111,10 @@ const Modal = (props: ModalProps) => {
     nextError.cvc = isEmpty(String(newCvc)) ? "invalid" : "";
     nextError.date = isEmpty(newDate) ? "invalid" : "";
 
-    const numberOfErrors = Object.values(nextError).filter(
-      (error) => error === "invalid"
-    );
+    const numberOfErrors = getNumberOfErrors(nextError);
     setError(nextError);
 
-    if (numberOfErrors.length > 0) {
+    if (numberOfErrors > 0) {
       return false;
     }
     return true;
@@ -218,7 +224,12 @@ const Modal = (props: ModalProps) => {
               <span className={errorMessage}>cvc is not valid</span>
             )}
 
-            <input type="submit" value="Confirm" className={`${button} mt-8`} />
+            <input
+              type="submit"
+              value="Confirm"
+              className={`${button} mt-8`}
+              disabled={getNumberOfErrors(error) > 0}
+            />
           </form>
         </section>
       </div>
