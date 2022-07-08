@@ -228,7 +228,13 @@ const Modal = (props: ModalProps) => {
               type="submit"
               value="Confirm"
               className={`${button} mt-8`}
-              disabled={getNumberOfErrors(error) > 0}
+              disabled={
+                getNumberOfErrors(error) > 0 ||
+                newDate === "" ||
+                newCvc === "" ||
+                newCardNumber === "" ||
+                newName === ""
+              }
             />
           </form>
         </section>
