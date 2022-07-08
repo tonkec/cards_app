@@ -12,7 +12,7 @@ const Cards = () => {
 
   const [isModalShown, setIsModalShown] = useState(false);
   const onButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
-    const buttonValue = e.target as HTMLButtonElement;
+    const buttonValue = e.currentTarget as HTMLButtonElement;
     const filteredCard = cards.filter(
       (card: any) => card.id === Number(buttonValue.value)
     );

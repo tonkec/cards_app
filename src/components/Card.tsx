@@ -1,4 +1,6 @@
 import { SiMastercard } from "react-icons/si";
+import { FiEdit2 } from "react-icons/fi";
+
 const Card = (props: any) => {
   return (
     <div
@@ -30,7 +32,7 @@ const Card = (props: any) => {
       </section>
       <footer className="absolute right-5 bottom-3">
         <button value={props.card.id} onClick={props.onButtonClick}>
-          Edit
+          <FiEdit2 />
         </button>
       </footer>
     </div>
