@@ -13,6 +13,7 @@ export const initialState: CardState = {
       cardNumber: "4242 4242 4242 4242",
       expiryDate: "10/24",
       cvc: 123,
+      type: "visa",
     },
   ],
 };
@@ -22,13 +23,16 @@ export const CardSlice = createSlice({
   initialState,
   reducers: {
     addCard: (state, action) => {
+      const cardTypes = ["visa", "mastercard"];
+      const cardTypeIndex = Math.floor(Math.random() * 2);
       const card = {
         id: Math.random() * 100,
         name: action.payload.name,
         cardNumber: action.payload.cardNumber,
         cvc: action.payload.cvc,
         expiryDate: action.payload.expiryDate,
-      };
+        type: cardTypes[cardTypeIndex],
+      } as CardModel;
       state.cards.push(card);
     },
     removeCard: (state, action) => {

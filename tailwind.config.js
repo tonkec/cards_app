@@ -21,6 +21,7 @@ module.exports = {
           300: "#444E5D",
         },
         black: "#1A212C",
+        blue: "#57cac7",
       },
       fontSize: {
         xs: "10px",
@@ -45,7 +46,8 @@ module.exports = {
         xl: "100px",
       },
       backgroundImage: {
-        card: "url('./assets/shape.svg')",
+        "card-purple": "url('./assets/shape.svg')",
+        "card-green": "url('./assets/shape-green.svg')",
       },
     },
   },

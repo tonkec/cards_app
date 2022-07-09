@@ -5,8 +5,11 @@ My little todo list
 [x] validate card number
 [x] validate cvc
 [x] introduce tailwind with color scheme
-[] check if visa or maestro, fake it
-[] any in typescript
-[] gradient on cards
-[] split card number after 4
-[] disable button if form is invalid
+[x] check if visa or maestro, fake it
+[x] any in typescript
+[x] gradient on cards
+[x] split card number after 4
+[x] disable button if form is invalid
+[x] edit icon
+[] add card on editable form
+[x] checkmark in input and x
