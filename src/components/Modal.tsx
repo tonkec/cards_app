@@ -1,11 +1,11 @@
 import { useState, FormEvent } from "react";
 import { useDispatch } from "react-redux";
-import { isEmpty } from "../utils/validators";
 import {
   validateCreditCardNumber,
   validateCvc,
   validateExpiryDate,
   validateName,
+  isEmpty,
 } from "../utils/validators";
 import {
   input,
@@ -18,12 +18,14 @@ import {
 import { removeCard, addCard, editCard } from "../reducers/cardSlice";
 import { CgClose } from "react-icons/cg";
 import { formatCardNumber } from "../utils/cardNumberFormatter";
-interface ModalProps {
-  id?: number;
-  name?: string;
-  cardNumber?: string;
-  expiryDate?: string;
-  cvc?: number;
+interface ModalProps
+  extends Partial<{
+    id: number;
+    name: string;
+    cardNumber: string;
+    expiryDate: string;
+    cvc: number;
+  }> {
   isShown: boolean;
   close: () => void;
 }
@@ -145,99 +147,102 @@ const Modal = (props: ModalProps) => {
     <>
       <div className="fixed bg-black opacity-40 -z-10 inset-0"></div>
       <div className={modal}>
-        <section
-          className={`bg-white-100 px-4 py-8 rounded-md relative top-1/2 -translate-y-1/2`}
-        >
-          <h2 className="text-black font-black mb-6 text-lg">
-            {id ? "Edit your card" : "Add your card details"}
-          </h2>
-          <button onClick={close} className="absolute top-4 right-4 font-bold">
-            <CgClose />
-          </button>
-          {id && (
-            <h1
-              className="text-3xl font-bold underline"
-              onClick={handleRemoveCard}
+        <div className="flex items-center justify-center min-h-full">
+          <section className="bg-white-100 px-4 py-8 rounded-md relative w-full my-6 max-w-sm">
+            <h2 className="text-black font-black mb-6 text-lg">
+              {id ? "Edit your card" : "Add your card details"}
+            </h2>
+            <button
+              onClick={close}
+              className="absolute top-4 right-4 font-bold"
             >
-              Delete me
-            </h1>
-          )}
-          <form onSubmit={onFormSubmit} className="w-full">
-            <label htmlFor="name" className={label}>
-              Name in card
-            </label>
-            <input
-              className={error.name !== "" ? errorInput : input}
-              type="text"
-              defaultValue={name ? name : ""}
-              onChange={onNameChange}
-              placeholder="John Doe"
-              id="name"
-            />
-
-            {error.name !== "" && (
-              <span className={errorMessage}>Name is not valid</span>
+              <CgClose />
+            </button>
+            {id && (
+              <h1
+                className="text-3xl font-bold underline"
+                onClick={handleRemoveCard}
+              >
+                Delete me
+              </h1>
             )}
-            <label htmlFor="cn" className={label}>
-              Card number
-            </label>
-            <input
-              className={error.number !== "" ? errorInput : input}
-              type="text"
-              defaultValue={cardNumber ? cardNumber : ""}
-              placeholder="0000 0000 0000 0000"
-              onChange={onCardNumberChange}
-              id="cn"
-            />
+            <form onSubmit={onFormSubmit} className="w-full">
+              <label htmlFor="name" className={label}>
+                Name in card
+              </label>
+              <input
+                className={error.name !== "" ? errorInput : input}
+                type="text"
+                defaultValue={name ? name : ""}
+                onChange={onNameChange}
+                placeholder="John Doe"
+                id="name"
+              />
 
-            {error.number !== "" && (
-              <span className={errorMessage}>Card number is not valid</span>
-            )}
-            <label htmlFor="date" className={label}>
-              Expiry date
-            </label>
-            <input
-              className={error.date !== "" ? errorInput : input}
-              type="text"
-              defaultValue={expiryDate ? expiryDate : ""}
-              placeholder="00/00"
-              onChange={onDateChange}
-              id="date"
-            />
+              {error.name !== "" && (
+                <span className={errorMessage}>Name is not valid</span>
+              )}
+              <label htmlFor="cn" className={label}>
+                Card number
+              </label>
+              <input
+                className={error.number !== "" ? errorInput : input}
+                type="text"
+                defaultValue={cardNumber ? cardNumber : ""}
+                placeholder="0000 0000 0000 0000"
+                onChange={onCardNumberChange}
+                id="cn"
+              />
 
-            {error.date !== "" && (
-              <span className={errorMessage}>Date is not valid</span>
-            )}
-            <label htmlFor="cvc" className={label}>
-              CVC (security code)
-            </label>
-            <input
-              className={error.cvc !== "" ? errorInput : input}
-              type="text"
-              defaultValue={cvc ? cvc : ""}
-              onChange={onCvcChange}
-              placeholder="000"
-              id="cvc"
-            />
+              {error.number !== "" && (
+                <span className={errorMessage}>Card number is not valid</span>
+              )}
+              <label htmlFor="date" className={label}>
+                Expiry date
+              </label>
+              <input
+                className={error.date !== "" ? errorInput : input}
+                type="text"
+                defaultValue={expiryDate ? expiryDate : ""}
+                placeholder="00/00"
+                onChange={onDateChange}
+                id="date"
+              />
 
-            {error.cvc !== "" && (
-              <span className={errorMessage}>cvc is not valid</span>
-            )}
+              {error.date !== "" && (
+                <span className={errorMessage}>Date is not valid</span>
+              )}
+              <label htmlFor="cvc" className={label}>
+                CVC (security code)
+              </label>
+              <input
+                className={error.cvc !== "" ? errorInput : input}
+                type="text"
+                defaultValue={cvc ? cvc : ""}
+                onChange={onCvcChange}
+                placeholder="000"
+                id="cvc"
+              />
 
-            <input
-              type="submit"
-              value="Confirm"
-              className={`${button} mt-8`}
-              disabled={
-                getNumberOfErrors(error) > 0 ||
-                newDate === "" ||
-                newCvc === "" ||
-                newCardNumber === "" ||
-                newName === ""
-              }
-            />
-          </form>
-        </section>
+              {error.cvc !== "" && (
+                <span className={errorMessage}>cvc is not valid</span>
+              )}
+
+              <input
+                type="submit"
+                value="Confirm"
+                className={`${button} mt-8`}
+                disabled={
+                  getNumberOfErrors(error) > 0 ||
+                  newDate === "" ||
+                  newCvc === "" ||
+                  newCardNumber === "" ||
+                  newName === ""
+                }
+              />
+            </form>
+          </section>
+        </div>
       </div>
     </>
   );

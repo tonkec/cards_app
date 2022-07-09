@@ -4,9 +4,9 @@ import { initialState } from "../reducers/cardSlice";
 import Card from "./Card";
 import Modal from "./Modal";
 import { button } from "../styles/Components";
-
+import { RootState } from "../store/store";
 const Cards = () => {
-  const cards = useSelector((state: any) => state.cards.cards);
+  const cards = useSelector((state: RootState) => state.cards.cards);
   const [currentCard, setCurrentCard] = useState(initialState.cards[0]);
   const [action, setAction] = useState("");
 
@@ -14,7 +14,7 @@ const Cards = () => {
   const onButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     const buttonValue = e.currentTarget as HTMLButtonElement;
     const filteredCard = cards.filter(
-      (card: any) => card.id === Number(buttonValue.value)
+      (card) => card.id === Number(buttonValue.value)
     );
     setCurrentCard(filteredCard[0]);
     setIsModalShown(true);
@@ -33,8 +33,8 @@ const Cards = () => {
         Add, edit or delete your cards any time.
       </p>
       {cards.length > 0 &&
-        cards.map((card: any) => (
-          <Card card={card} onButtonClick={onButtonClick} />
+        cards.map((card) => (
+          <Card key={card.id} card={card} onButtonClick={onButtonClick} />
         ))}
       <button onClick={modalOpen} className={`${button} mt-6`}>
         Add new card
