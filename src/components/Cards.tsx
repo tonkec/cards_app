@@ -48,6 +48,7 @@ const Cards = () => {
           cvc={currentCard.cvc}
           expiryDate={currentCard.expiryDate}
           isShown={isModalShown}
+          cardType={currentCard.cardType}
           close={modalClose}
         ></Modal>
       ) : (

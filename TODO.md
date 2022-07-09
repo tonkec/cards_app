@@ -11,6 +11,6 @@ My little todo list
 [x] split card number after 4
 [x] disable button if form is invalid
 [x] edit icon
-[] add card on editable form
+[x] add card on editable form
 [x] checkmark in input and x
-[] add font family
+[x] add font family

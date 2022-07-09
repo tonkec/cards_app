@@ -21,6 +21,8 @@ import { formatCardNumber } from "../utils/cardNumberFormatter";
 import FormError from "./../models/FormError";
 import ErrorIcon from "../assets/form-error.svg";
 import SuccessIcon from "../assets/form-success.svg";
+import Card from "./Card";
+import { CardType } from "../models/Card";
 interface ModalProps
   extends Partial<{
     id: number;
@@ -28,6 +30,7 @@ interface ModalProps
     cardNumber: string;
     expiryDate: string;
     cvc: number;
+    cardType: CardType;
   }> {
   isShown: boolean;
   close: () => void;
@@ -43,7 +46,9 @@ function getNumberOfErrors(errors: {
 }
 
 const Modal = (props: ModalProps) => {
-  const { name, cardNumber, expiryDate, cvc, isShown, close, id } = props;
+  const { name, cardNumber, expiryDate, cvc, isShown, close, id, cardType } =
+    props;
+
   const [newName, setNewName] = useState(name ? name : "");
   const [newCardNumber, setNewCardNumber] = useState(
     cardNumber ? cardNumber : ""
@@ -161,14 +166,20 @@ const Modal = (props: ModalProps) => {
             >
               <CgClose />
             </button>
+
             {id && (
-              <h1
-                className="text-3xl font-bold underline"
-                onClick={handleRemoveCard}
-              >
-                Delete me
-              </h1>
+              <Card
+                card={{
+                  id: id,
+                  name: newName,
+                  expiryDate: newDate,
+                  cvc: Number(newCvc),
+                  cardNumber: newCardNumber,
+                  cardType: cardType,
+                }}
+              />
             )}
+
             <form onSubmit={onFormSubmit} className="w-full relative">
               <label htmlFor="name" className={label}>
                 Name in card
@@ -239,6 +250,15 @@ const Modal = (props: ModalProps) => {
                 }
               />
             </form>
+
+            {id && (
+              <button
+                className="text-md text-gray-100 mt-4 no-underline block mx-auto"
+                onClick={handleRemoveCard}
+              >
+                Delete me
+              </button>
+            )}
           </section>
         </div>
       </div>

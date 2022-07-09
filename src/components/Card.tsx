@@ -1,16 +1,15 @@
-import { SiMastercard } from "react-icons/si";
 import CardModel from "../models/Card";
 import editIcon from "./../assets/edit-icon.svg";
 import mastercardIcon from "./../assets/mastercard-logo.svg";
 import visaIcon from "./../assets/visa-logo.svg";
 interface Props {
   card: CardModel;
-  onButtonClick: React.MouseEventHandler<HTMLButtonElement>;
+  onButtonClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const Card = ({ card, onButtonClick }: Props) => {
   const cardTypeClass =
-    card.type === "mastercard"
+    card.cardType === "mastercard"
       ? "bg-purple-100 bg-card-purple text-white-100"
       : "bg-blue bg-card-green text-black";
   return (
@@ -20,7 +19,7 @@ const Card = ({ card, onButtonClick }: Props) => {
     >
       <header className="relative right-3 flex pb-8">
         <div className="absolute left-3 text-xl">
-          {card.type === "mastercard" ? (
+          {card.cardType === "mastercard" ? (
             <img src={mastercardIcon} alt="mastercard-icon" className="mt-1" />
           ) : (
             <img src={visaIcon} alt="visa-icon" className="mt-1" />

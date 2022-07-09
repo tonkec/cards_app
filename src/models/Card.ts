@@ -4,7 +4,7 @@ export default interface CardModel {
   cardNumber: string;
   expiryDate: string;
   cvc: number;
-  type: CardType;
+  cardType: CardType;
 }
 
-type CardType = "visa" | "mastercard";
+export type CardType = "visa" | "mastercard" | undefined;

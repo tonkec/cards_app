@@ -13,7 +13,7 @@ export const initialState: CardState = {
       cardNumber: "4242 4242 4242 4242",
       expiryDate: "10/24",
       cvc: 123,
-      type: "visa",
+      cardType: "visa",
     },
   ],
 };
@@ -31,7 +31,7 @@ export const CardSlice = createSlice({
         cardNumber: action.payload.cardNumber,
         cvc: action.payload.cvc,
         expiryDate: action.payload.expiryDate,
-        type: cardTypes[cardTypeIndex],
+        cardType: cardTypes[cardTypeIndex],
       } as CardModel;
       state.cards.push(card);
     },
