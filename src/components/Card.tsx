@@ -5,10 +5,11 @@ interface Props {
   card: CardModel;
   onButtonClick: React.MouseEventHandler<HTMLButtonElement>;
 }
+
 const Card = ({ card, onButtonClick }: Props) => {
   return (
     <div
-      className="bg-purple-100 text-white-100 rounded-sm p-3 relative mb-6"
+      className={`bg-purple-100 text-white-100 rounded-sm p-3 relative mb-6 bg-card bg-right bg-no-repeat bg-cover`}
       key={card.id}
     >
       <header className="relative right-3 flex pb-8">

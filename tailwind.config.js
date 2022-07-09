@@ -44,6 +44,9 @@ module.exports = {
         md: "24px",
         xl: "100px",
       },
+      backgroundImage: {
+        card: "url('./assets/shape.svg')",
+      },
     },
   },
   plugins: [],
