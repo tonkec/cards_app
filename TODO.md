@@ -13,3 +13,4 @@ My little todo list
 [x] edit icon
 [] add card on editable form
 [x] checkmark in input and x
+[] add font family

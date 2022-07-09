@@ -30,6 +30,9 @@ module.exports = {
         lg: "24px",
         xl: "30px",
       },
+      fontFamily: {
+        lineto: ["lineto"],
+      },
       spacing: {
         1: "4px",
         2: "8px",
