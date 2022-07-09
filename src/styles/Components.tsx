@@ -1,6 +1,6 @@
 export const input =
   "block w-full border-b border-gray-100 placeholder-gray-100 outline-none focus:border-black";
-export const label = "text-black mb-2 block font-bold text-sm mt-6";
+export const label = "relative text-black mb-2 block font-bold text-sm mt-6";
 export const modal = "fixed inset-0 overflow-y-auto";
 
 export const button =

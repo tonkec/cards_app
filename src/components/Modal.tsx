@@ -18,6 +18,9 @@ import {
 import { removeCard, addCard, editCard } from "../reducers/cardSlice";
 import { CgClose } from "react-icons/cg";
 import { formatCardNumber } from "../utils/cardNumberFormatter";
+import FormError from "./../models/FormError";
+import ErrorIcon from "../assets/form-error.svg";
+import SuccessIcon from "../assets/form-success.svg";
 interface ModalProps
   extends Partial<{
     id: number;
@@ -64,7 +67,7 @@ const Modal = (props: ModalProps) => {
     if (!validateName(inputValue)) {
       setError((oldError) => ({ ...oldError, name: "invalid" }));
     } else {
-      setError((oldError) => ({ ...oldError, name: "" }));
+      setError((oldError) => ({ ...oldError, name: "valid" }));
       setNewName(inputValue);
     }
   };
@@ -75,7 +78,7 @@ const Modal = (props: ModalProps) => {
     if (!validateCreditCardNumber(inputValue)) {
       setError((oldError) => ({ ...oldError, number: "invalid" }));
     } else {
-      setError((oldError) => ({ ...oldError, number: "" }));
+      setError((oldError) => ({ ...oldError, number: "valid" }));
       setNewCardNumber(formatCardNumber(inputValue));
     }
   };
@@ -85,7 +88,7 @@ const Modal = (props: ModalProps) => {
     if (!validateExpiryDate(inputValue)) {
       setError((oldError) => ({ ...oldError, date: "invalid" }));
     } else {
-      setError((oldError) => ({ ...oldError, date: "" }));
+      setError((oldError) => ({ ...oldError, date: "valid" }));
       setNewDate(inputValue);
     }
   };
@@ -96,7 +99,7 @@ const Modal = (props: ModalProps) => {
       setError((oldError) => ({ ...oldError, cvc: "invalid" }));
       return;
     } else {
-      setError((oldError) => ({ ...oldError, cvc: "" }));
+      setError((oldError) => ({ ...oldError, cvc: "valid" }));
       setNewCvc(inputValue);
     }
   };
@@ -108,10 +111,10 @@ const Modal = (props: ModalProps) => {
 
   const isFormValid = () => {
     const nextError = { ...error };
-    nextError.name = isEmpty(newName) ? "invalid" : "";
-    nextError.number = isEmpty(newCardNumber) ? "invalid" : "";
-    nextError.cvc = isEmpty(String(newCvc)) ? "invalid" : "";
-    nextError.date = isEmpty(newDate) ? "invalid" : "";
+    nextError.name = isEmpty(newName) ? "invalid" : "valid";
+    nextError.number = isEmpty(newCardNumber) ? "invalid" : "valid";
+    nextError.cvc = isEmpty(String(newCvc)) ? "invalid" : "valid";
+    nextError.date = isEmpty(newDate) ? "invalid" : "valid";
 
     const numberOfErrors = getNumberOfErrors(nextError);
     setError(nextError);
@@ -166,67 +169,62 @@ const Modal = (props: ModalProps) => {
                 Delete me
               </h1>
             )}
-            <form onSubmit={onFormSubmit} className="w-full">
+            <form onSubmit={onFormSubmit} className="w-full relative">
               <label htmlFor="name" className={label}>
                 Name in card
+                <FormIcon error={error} errorType="name" />
               </label>
               <input
-                className={error.name !== "" ? errorInput : input}
+                className={error.name === "invalid" ? errorInput : input}
                 type="text"
                 defaultValue={name ? name : ""}
                 onChange={onNameChange}
                 placeholder="John Doe"
                 id="name"
               />
+              <ErrorMessage error={error} errorType="name" />
 
-              {error.name !== "" && (
-                <span className={errorMessage}>Name is not valid</span>
-              )}
               <label htmlFor="cn" className={label}>
                 Card number
+                <FormIcon error={error} errorType="number" />
               </label>
               <input
-                className={error.number !== "" ? errorInput : input}
+                className={error.number === "invalid" ? errorInput : input}
                 type="text"
                 defaultValue={cardNumber ? cardNumber : ""}
                 placeholder="0000 0000 0000 0000"
                 onChange={onCardNumberChange}
                 id="cn"
               />
+              <ErrorMessage error={error} errorType="number" />
 
-              {error.number !== "" && (
-                <span className={errorMessage}>Card number is not valid</span>
-              )}
               <label htmlFor="date" className={label}>
                 Expiry date
+                <FormIcon error={error} errorType="date" />
               </label>
               <input
-                className={error.date !== "" ? errorInput : input}
+                className={error.date === "invalid" ? errorInput : input}
                 type="text"
                 defaultValue={expiryDate ? expiryDate : ""}
                 placeholder="00/00"
                 onChange={onDateChange}
                 id="date"
               />
+              <ErrorMessage error={error} errorType="date" />
 
-              {error.date !== "" && (
-                <span className={errorMessage}>Date is not valid</span>
-              )}
               <label htmlFor="cvc" className={label}>
                 CVC (security code)
+                <FormIcon error={error} errorType="cvc" />
               </label>
               <input
-                className={error.cvc !== "" ? errorInput : input}
+                className={error.cvc === "invalid" ? errorInput : input}
                 type="text"
                 defaultValue={cvc ? cvc : ""}
                 onChange={onCvcChange}
                 placeholder="000"
                 id="cvc"
               />
-
-              {error.cvc !== "" && (
-                <span className={errorMessage}>cvc is not valid</span>
-              )}
+              <ErrorMessage error={error} errorType="cvc" />
 
               <input
                 type="submit"
@@ -249,3 +247,17 @@ const Modal = (props: ModalProps) => {
 };
 
 export default Modal;
+
+const FormIcon = ({ error, errorType }: FormError) => (
+  <span className="absolute top-[30px] right-2">
+    {error[errorType] === "valid" && <img src={SuccessIcon} alt="success" />}
+    {error[errorType] === "invalid" && <img src={ErrorIcon} alt="error" />}
+  </span>
+);
+
+const ErrorMessage = ({ error, errorType }: FormError) => {
+  if (error[errorType] === "valid" || error[errorType] === "") {
+    return null;
+  }
+  return <span className={errorMessage}>{errorType} is not valid</span>;
+};
