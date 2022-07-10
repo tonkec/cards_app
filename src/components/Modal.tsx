@@ -7,20 +7,19 @@ import {
   validateName,
   isEmpty,
 } from "../utils/validators";
+import getNumberOfErrors from "../utils/getNumberOfErrors";
 import {
   input,
   label,
   modal,
   button,
-  errorMessage,
   errorInput,
   successInput,
 } from "../styles/Components";
 import { removeCard, addCard, editCard } from "../reducers/cardSlice";
 import { CgClose } from "react-icons/cg";
-import FormError from "./../models/FormError";
-import ErrorIcon from "../assets/form-error.svg";
-import SuccessIcon from "../assets/form-success.svg";
+import FormIcon from "./FormIcon";
+import ErrorMessage from "./ErrorMessage";
 import Card from "./Card";
 import { CardType } from "../models/Card";
 interface ModalProps
@@ -34,15 +33,6 @@ interface ModalProps
   }> {
   isShown: boolean;
   close: () => void;
-}
-
-function getNumberOfErrors(errors: {
-  name: string;
-  number: string;
-  cvc: string;
-  date: string;
-}) {
-  return Object.values(errors).filter((error) => error === "invalid").length;
 }
 
 const setInputClassName = (field: string) => {
@@ -276,17 +266,3 @@ const Modal = (props: ModalProps) => {
 };
 
 export default Modal;
-
-const FormIcon = ({ error, errorType }: FormError) => (
-  <span className="absolute top-[30px] right-2">
-    {error[errorType] === "valid" && <img src={SuccessIcon} alt="success" />}
-    {error[errorType] === "invalid" && <img src={ErrorIcon} alt="error" />}
-  </span>
-);
-
-const ErrorMessage = ({ error, errorType }: FormError) => {
-  if (error[errorType] === "valid" || error[errorType] === "") {
-    return null;
-  }
-  return <span className={errorMessage}>{errorType} is not valid</span>;
-};
