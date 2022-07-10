@@ -2,6 +2,8 @@ import CardModel from "../models/Card";
 import editIcon from "./../assets/edit-icon.svg";
 import mastercardIcon from "./../assets/mastercard-logo.svg";
 import visaIcon from "./../assets/visa-logo.svg";
+import { formatCardNumber } from "../utils/cardNumberFormatter";
+
 interface Props {
   card: CardModel;
   onButtonClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -42,12 +44,15 @@ const Card = ({ card, onButtonClick }: Props) => {
         <h5 className="font-bold text-md mt-8 mb-2 text-white-100">
           {card.name}
         </h5>
-        {card.cardNumber}
+
+        {formatCardNumber(card.cardNumber)}
       </section>
       <footer className="absolute right-5 bottom-3">
-        <button value={card.id} onClick={onButtonClick}>
-          <img src={editIcon} alt="edit" />
-        </button>
+        {onButtonClick && (
+          <button value={card.id} onClick={onButtonClick}>
+            <img src={editIcon} alt="edit" />
+          </button>
+        )}
       </footer>
     </div>
   );

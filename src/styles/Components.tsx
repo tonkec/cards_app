@@ -8,4 +8,6 @@ export const button =
 
 export const errorMessage = "text-red mt-2 block";
 export const errorInput =
-  "block w-full border-b placeholder-gray-100 outline-none focus:border-black border-red text-red";
+  "block w-full border-b placeholder-gray-100 outline-none focus:border-red border-red text-red";
+export const successInput =
+  "block w-full border-b placeholder-gray-100 outline-none focus:border-green border-green text-green";

@@ -36,7 +36,7 @@ const Cards = () => {
         cards.map((card) => (
           <Card key={card.id} card={card} onButtonClick={onButtonClick} />
         ))}
-      <button onClick={modalOpen} className={`${button} mt-6`}>
+      <button onClick={modalOpen} className={`${button} mt-6 mb-6`}>
         Add new card
       </button>
       {action === "edit" ? (

@@ -7,4 +7,4 @@ export default interface CardModel {
   cardType: CardType;
 }
 
-export type CardType = "visa" | "mastercard" | undefined;
+export type CardType = "visa" | "mastercard";

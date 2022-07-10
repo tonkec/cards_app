@@ -14,10 +14,10 @@ import {
   button,
   errorMessage,
   errorInput,
+  successInput,
 } from "../styles/Components";
 import { removeCard, addCard, editCard } from "../reducers/cardSlice";
 import { CgClose } from "react-icons/cg";
-import { formatCardNumber } from "../utils/cardNumberFormatter";
 import FormError from "./../models/FormError";
 import ErrorIcon from "../assets/form-error.svg";
 import SuccessIcon from "../assets/form-success.svg";
@@ -44,6 +44,14 @@ function getNumberOfErrors(errors: {
 }) {
   return Object.values(errors).filter((error) => error === "invalid").length;
 }
+
+const setInputClassName = (field: string) => {
+  return (
+    (field === "invalid" && errorInput) ||
+    (field === "valid" && successInput) ||
+    input
+  );
+};
 
 const Modal = (props: ModalProps) => {
   const { name, cardNumber, expiryDate, cvc, isShown, close, id, cardType } =
@@ -84,7 +92,7 @@ const Modal = (props: ModalProps) => {
       setError((oldError) => ({ ...oldError, number: "invalid" }));
     } else {
       setError((oldError) => ({ ...oldError, number: "valid" }));
-      setNewCardNumber(formatCardNumber(inputValue));
+      setNewCardNumber(inputValue);
     }
   };
 
@@ -151,6 +159,13 @@ const Modal = (props: ModalProps) => {
     }
   };
 
+  const isButtonDisabled =
+    getNumberOfErrors(error) > 0 ||
+    newDate === "" ||
+    newCvc === "" ||
+    newCardNumber === "" ||
+    newName === "";
+
   return (
     <>
       <div className="fixed bg-black opacity-40 -z-10 inset-0"></div>
@@ -167,7 +182,7 @@ const Modal = (props: ModalProps) => {
               <CgClose />
             </button>
 
-            {id && (
+            {id && cardType && (
               <Card
                 card={{
                   id: id,
@@ -186,7 +201,7 @@ const Modal = (props: ModalProps) => {
                 <FormIcon error={error} errorType="name" />
               </label>
               <input
-                className={error.name === "invalid" ? errorInput : input}
+                className={setInputClassName(error.name)}
                 type="text"
                 defaultValue={name ? name : ""}
                 onChange={onNameChange}
@@ -200,7 +215,7 @@ const Modal = (props: ModalProps) => {
                 <FormIcon error={error} errorType="number" />
               </label>
               <input
-                className={error.number === "invalid" ? errorInput : input}
+                className={setInputClassName(error.number)}
                 type="text"
                 defaultValue={cardNumber ? cardNumber : ""}
                 placeholder="0000 0000 0000 0000"
@@ -214,7 +229,7 @@ const Modal = (props: ModalProps) => {
                 <FormIcon error={error} errorType="date" />
               </label>
               <input
-                className={error.date === "invalid" ? errorInput : input}
+                className={setInputClassName(error.date)}
                 type="text"
                 defaultValue={expiryDate ? expiryDate : ""}
                 placeholder="00/00"
@@ -228,7 +243,7 @@ const Modal = (props: ModalProps) => {
                 <FormIcon error={error} errorType="cvc" />
               </label>
               <input
-                className={error.cvc === "invalid" ? errorInput : input}
+                className={setInputClassName(error.cvc)}
                 type="text"
                 defaultValue={cvc ? cvc : ""}
                 onChange={onCvcChange}
@@ -241,13 +256,7 @@ const Modal = (props: ModalProps) => {
                 type="submit"
                 value="Confirm"
                 className={`${button} mt-8`}
-                disabled={
-                  getNumberOfErrors(error) > 0 ||
-                  newDate === "" ||
-                  newCvc === "" ||
-                  newCardNumber === "" ||
-                  newName === ""
-                }
+                disabled={isButtonDisabled}
               />
             </form>
 
@@ -256,7 +265,7 @@ const Modal = (props: ModalProps) => {
                 className="text-md text-gray-100 mt-4 no-underline block mx-auto"
                 onClick={handleRemoveCard}
               >
-                Delete me
+                Delete card
               </button>
             )}
           </section>
